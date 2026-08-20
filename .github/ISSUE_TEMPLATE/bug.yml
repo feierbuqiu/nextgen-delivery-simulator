@@ -1,0 +1,48 @@
+name: 缺陷报告
+description: 报告可复现的本机功能或界面问题
+title: "[缺陷] "
+body:
+  - type: markdown
+    attributes:
+      value: 请勿填写真实个人信息、生产数据、密钥或现实机构的非公开内容。
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题概述
+      description: 用简体中文说明实际行为与预期行为。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 最小复现步骤
+      description: 请使用虚构或合成数据。
+      placeholder: |
+        1. 启动本机开发服务器
+        2. 打开某工作区
+        3. 执行某操作
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本或提交
+      description: 填写版本号或完整提交哈希。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 本机环境
+      description: 填写操作系统、浏览器和 Node.js 版本，不要填写用户名或绝对路径。
+    validations:
+      required: true
+  - type: checkboxes
+    id: boundary
+    attributes:
+      label: 公开边界确认
+      options:
+        - label: 本报告只含虚构或合成数据，不含秘密信息。
+          required: true
+        - label: 我已确认问题可在回环地址的本机运行方式中复现。
+          required: true

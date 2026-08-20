@@ -1,0 +1,813 @@
+{
+  "fixtureProvenance": {
+    "sourceCommit": "e9d557c5213e8bfd92986f58ab987fef53b7c6a3",
+    "sourceFactory": "src/domain/service/seed.ts#createServiceSeedState"
+  },
+  "schemaVersion": 32,
+  "draft": null,
+  "transactions": [],
+  "postalSupplySales": [],
+  "channelProductOrders": [],
+  "supplementaryTrafficRecords": [],
+  "electronicCommerceRecords": [],
+  "replyCouponRedemptions": [],
+  "settlements": [],
+  "corrections": [],
+  "withdrawals": [],
+  "refunds": [],
+  "documentActions": [],
+  "fiscalInvoices": [],
+  "returnReceipts": [],
+  "bulkBatches": [],
+  "selfServiceImports": [],
+  "looseMailHandovers": [],
+  "dispatchBags": [],
+  "dispatchBagHandovers": [],
+  "dispatchBagChanges": [],
+  "dispatchBagInterchangeReturns": [],
+  "dispatchRoutes": [],
+  "dispatchPrintRecords": [],
+  "postageMeterDevices": [
+    {
+      "id": "postage-meter-primary",
+      "name": "练习联网邮资机 PM-01",
+      "meterHeadNumber": "PMH000101",
+      "baseNumber": "PMB000101",
+      "validity": "valid",
+      "counterCode": "99901001",
+      "networkMode": "direct",
+      "terminalPort": "1",
+      "reportStatus": "enabled",
+      "totalPostageCents": 1000000,
+      "remainingPostageCents": 995100,
+      "cumulativeImprintCount": 3,
+      "cumulativePostageCents": 4900,
+      "updatedAt": "2026-01-15T09:10:00.000Z"
+    },
+    {
+      "id": "postage-meter-secondary",
+      "name": "练习备用邮资机 PM-02",
+      "meterHeadNumber": "PMH000102",
+      "baseNumber": "PMB000102",
+      "validity": "valid",
+      "counterCode": "99901001",
+      "networkMode": "indirect",
+      "terminalPort": "2",
+      "reportStatus": "enabled",
+      "totalPostageCents": 500000,
+      "remainingPostageCents": 500000,
+      "cumulativeImprintCount": 0,
+      "cumulativePostageCents": 0,
+      "updatedAt": "2026-01-15T09:10:00.000Z"
+    }
+  ],
+  "postageMeterBatches": [],
+  "postageMeterRegistrations": [],
+  "postageMeterDailyBalances": [],
+  "postageMeterMailHandovers": [],
+  "postageMeterFundingRequests": [],
+  "postageMeterRepairRequests": [],
+  "postageMeterDeviceHandoverHistory": [
+    {
+      "id": "postage-meter-device-handover-001",
+      "deviceId": "postage-meter-primary",
+      "sourceInstitutionName": "云浦设备管理点",
+      "sourceEmployeeName": "林川",
+      "receivingInstitutionName": "景麓营业部",
+      "receivingEmployeeName": "演示营业员",
+      "operatedAt": "2026-01-15T09:10:00.000Z"
+    },
+    {
+      "id": "postage-meter-device-handover-002",
+      "deviceId": "postage-meter-secondary",
+      "sourceInstitutionName": "松岚设备管理点",
+      "sourceEmployeeName": "周沐",
+      "receivingInstitutionName": "景麓营业部",
+      "receivingEmployeeName": "演示营业员",
+      "operatedAt": "2026-01-15T09:15:00.000Z"
+    }
+  ],
+  "specialHandlingApplications": [],
+  "windowDeliveryBags": [
+    {
+      "id": "window-bag-001",
+      "bagCode": "CTB202608080001",
+      "dispatchListNumber": "PCD20260808001",
+      "routeCode": "YPLJ-CF",
+      "postingDate": "2026-08-08",
+      "itemIds": [
+        "window-item-import-001",
+        "window-item-import-002"
+      ],
+      "receivedAt": null,
+      "receivedBy": null,
+      "unboundAt": null
+    },
+    {
+      "id": "window-bag-002",
+      "bagCode": "CTB202608090002",
+      "dispatchListNumber": "PCD20260809002",
+      "routeCode": "SL-CF",
+      "postingDate": "2026-08-09",
+      "itemIds": [
+        "window-item-import-003"
+      ],
+      "receivedAt": null,
+      "receivedBy": null,
+      "unboundAt": null
+    }
+  ],
+  "windowDeliveryItems": [
+    {
+      "id": "window-item-import-001",
+      "source": "import-bag",
+      "bagId": "window-bag-001",
+      "dispatchListNumber": "PCD20260808001",
+      "productCode": "200000",
+      "productName": "本埠给据信函",
+      "itemCode": "RA20260808001GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "周沐",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "澜京市长风区星河路 26 号",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-08",
+      "receivedAt": null,
+      "receivedBy": null,
+      "specialSequence": 0,
+      "money": {
+        "taxCents": 0,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 0,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "pending-receipt",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    },
+    {
+      "id": "window-item-import-002",
+      "source": "import-bag",
+      "bagId": "window-bag-001",
+      "dispatchListNumber": "PCD20260808001",
+      "productCode": "220000",
+      "productName": "本埠给据明信片",
+      "itemCode": "RP20260808002GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "苏清",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "澜京市长风区星河路 26 号",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-08",
+      "receivedAt": null,
+      "receivedBy": null,
+      "specialSequence": 0,
+      "money": {
+        "taxCents": 0,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 0,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "pending-receipt",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    },
+    {
+      "id": "window-item-import-003",
+      "source": "import-bag",
+      "bagId": "window-bag-002",
+      "dispatchListNumber": "PCD20260809002",
+      "productCode": "250200",
+      "productName": "国际给据小包",
+      "itemCode": "RR20260809003GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "周沐",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "澜京市长风区星河路 26 号",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-08",
+      "receivedAt": null,
+      "receivedBy": null,
+      "specialSequence": 0,
+      "money": {
+        "taxCents": 0,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 0,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "pending-receipt",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    },
+    {
+      "id": "window-item-delivery-return-001",
+      "source": "delivery-return",
+      "bagId": null,
+      "dispatchListNumber": "",
+      "productCode": "299199",
+      "productName": "外埠给据信函",
+      "itemCode": "RA20260809004GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "周沐",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "澜京市长风区星河路 26 号",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-08",
+      "receivedAt": null,
+      "receivedBy": null,
+      "specialSequence": 0,
+      "money": {
+        "taxCents": 0,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 0,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "pending-receipt",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    },
+    {
+      "id": "window-item-delivery-window-001",
+      "source": "delivery-to-window",
+      "bagId": null,
+      "dispatchListNumber": "",
+      "productCode": "220100",
+      "productName": "外埠给据明信片",
+      "itemCode": "RP20260809005GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "周沐",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "澜京市长风区星河路 26 号",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-08",
+      "receivedAt": null,
+      "receivedBy": null,
+      "specialSequence": 0,
+      "money": {
+        "taxCents": 0,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 0,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "pending-receipt",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    },
+    {
+      "id": "window-item-stored-001",
+      "source": "supplement",
+      "bagId": null,
+      "dispatchListNumber": "",
+      "productCode": "200200",
+      "productName": "国际给据信函",
+      "itemCode": "RR20260807006GN",
+      "sendingOffice": "松岚寄递点",
+      "receivingOffice": "景麓营业部",
+      "destinationOffice": "云浦寄达局",
+      "senderName": "林川",
+      "senderPhone": "10000000004",
+      "senderAddress": "云浦市湖岸区春和路 18 号",
+      "recipientName": "沈舟",
+      "recipientMobile": "10000000005",
+      "recipientPhone": "",
+      "recipientAddress": "海外示范地址",
+      "mailNote": "",
+      "nonStandard": false,
+      "pieces": 1,
+      "innerPieces": 1,
+      "weightGrams": 120,
+      "postingDate": "2026-08-07",
+      "receivedAt": "2026-08-08T09:20:00.000Z",
+      "receivedBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "云浦寄达局"
+      },
+      "specialSequence": 12001,
+      "money": {
+        "taxCents": 320,
+        "inspectionCents": 0,
+        "returnPostageCents": 0,
+        "redirectedReturnPostageCents": 0,
+        "underpaidPostageCents": 0,
+        "underpaidHandlingCents": 0,
+        "storageWaitCents": 200,
+        "extensionServiceCents": 0,
+        "codPaymentCents": 0,
+        "insuranceValueCents": 0,
+        "insuranceFeeCents": 0,
+        "insuredAmountCents": 0
+      },
+      "status": "stored",
+      "processedAt": null,
+      "processedBy": null,
+      "transfer": null,
+      "cancellation": null,
+      "reminderStage": "none",
+      "firstReminderAt": null,
+      "secondReminderAt": null,
+      "overdueAt": null,
+      "deletedAt": null,
+      "printHistory": []
+    }
+  ],
+  "windowDeliverySequenceStarts": [
+    {
+      "productCode": "200000",
+      "productName": "本埠给据信函",
+      "startNumber": 12001
+    },
+    {
+      "productCode": "250200",
+      "productName": "国际给据小包",
+      "startNumber": 22001
+    }
+  ],
+  "windowDeliveryAudits": [],
+  "postalSupplyInventoryBalances": [
+    {
+      "itemId": "supply-demo-grain-gift-box",
+      "superiorQuantity": 200,
+      "institutionQuantity": 80,
+      "employeeQuantities": {
+        "80000001": 40
+      }
+    },
+    {
+      "itemId": "supply-demo-dried-fruit-box",
+      "superiorQuantity": 173,
+      "institutionQuantity": 70,
+      "employeeQuantities": {
+        "80000001": 35
+      }
+    },
+    {
+      "itemId": "supply-demo-handwoven-item",
+      "superiorQuantity": 100,
+      "institutionQuantity": 40,
+      "employeeQuantities": {
+        "80000001": 20
+      }
+    },
+    {
+      "itemId": "supply-standard-envelope",
+      "superiorQuantity": 600,
+      "institutionQuantity": 250,
+      "employeeQuantities": {
+        "80000001": 120
+      }
+    },
+    {
+      "itemId": "supply-padded-mailer",
+      "superiorQuantity": 400,
+      "institutionQuantity": 160,
+      "employeeQuantities": {
+        "80000001": 80
+      }
+    },
+    {
+      "itemId": "supply-address-label",
+      "superiorQuantity": 1500,
+      "institutionQuantity": 600,
+      "employeeQuantities": {
+        "80000001": 300
+      }
+    },
+    {
+      "itemId": "supply-international-reply-coupon",
+      "superiorQuantity": 150,
+      "institutionQuantity": 60,
+      "employeeQuantities": {
+        "80000001": 30
+      }
+    },
+    {
+      "itemId": "supply-redeem-ticket-010",
+      "superiorQuantity": 499995,
+      "institutionQuantity": 199998,
+      "employeeQuantities": {
+        "80000001": 99999
+      }
+    },
+    {
+      "itemId": "supply-redeem-ticket-040",
+      "superiorQuantity": 499995,
+      "institutionQuantity": 199998,
+      "employeeQuantities": {
+        "80000001": 99999
+      }
+    },
+    {
+      "itemId": "supply-redeem-ticket-120",
+      "superiorQuantity": 499995,
+      "institutionQuantity": 199998,
+      "employeeQuantities": {
+        "80000001": 99999
+      }
+    },
+    {
+      "itemId": "supply-redeem-ticket-250",
+      "superiorQuantity": 499995,
+      "institutionQuantity": 199998,
+      "employeeQuantities": {
+        "80000001": 99999
+      }
+    },
+    {
+      "itemId": "supply-redeem-ticket-600",
+      "superiorQuantity": 499995,
+      "institutionQuantity": 199998,
+      "employeeQuantities": {
+        "80000001": 99999
+      }
+    },
+    {
+      "itemId": "supply-redeem-postcard-120",
+      "superiorQuantity": 5000,
+      "institutionQuantity": 2000,
+      "employeeQuantities": {
+        "80000001": 1000
+      }
+    },
+    {
+      "itemId": "supply-redeem-envelope-160",
+      "superiorQuantity": 4995,
+      "institutionQuantity": 1998,
+      "employeeQuantities": {
+        "80000001": 999
+      }
+    },
+    {
+      "itemId": "supply-redeem-card-160",
+      "superiorQuantity": 4960,
+      "institutionQuantity": 1984,
+      "employeeQuantities": {
+        "80000001": 992
+      }
+    }
+  ],
+  "postalSupplyDocuments": [
+    {
+      "id": "YPGL-RK-20260807-000001",
+      "kind": "inbound",
+      "status": "saved",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "superiorInstitutionCode": "99800000",
+      "superiorInstitutionName": "云浦运营中心",
+      "employeeId": null,
+      "employeeName": null,
+      "createdAt": "2026-08-07T08:40:00.000Z",
+      "createdBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "云浦寄达局"
+      },
+      "updatedAt": "2026-08-07T08:40:00.000Z",
+      "approvedAt": null,
+      "approvedBy": null,
+      "rejectedAt": null,
+      "rejectedBy": null,
+      "receivedAt": null,
+      "receivedBy": null,
+      "deletedAt": null,
+      "lines": [
+        {
+          "itemId": "supply-standard-envelope",
+          "label": "演示标准信封",
+          "mnemonic": "BZSF",
+          "unit": "个",
+          "unitPriceCents": 200,
+          "requestedQuantity": 10,
+          "actualQuantity": 10,
+          "amountCents": 2000
+        }
+      ]
+    },
+    {
+      "id": "YPGL-QL-20260808-000002",
+      "kind": "requisition",
+      "status": "pending-approval",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "superiorInstitutionCode": "99800000",
+      "superiorInstitutionName": "云浦运营中心",
+      "employeeId": null,
+      "employeeName": null,
+      "createdAt": "2026-08-08T09:05:00.000Z",
+      "createdBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "云浦寄达局"
+      },
+      "updatedAt": "2026-08-08T09:05:00.000Z",
+      "approvedAt": null,
+      "approvedBy": null,
+      "rejectedAt": null,
+      "rejectedBy": null,
+      "receivedAt": null,
+      "receivedBy": null,
+      "deletedAt": null,
+      "lines": [
+        {
+          "itemId": "supply-demo-grain-gift-box",
+          "label": "演示谷物礼盒",
+          "mnemonic": "GWLH",
+          "unit": "箱",
+          "unitPriceCents": 6800,
+          "requestedQuantity": 3,
+          "actualQuantity": 3,
+          "amountCents": 20400
+        }
+      ]
+    },
+    {
+      "id": "YPGL-QL-20260809-000003",
+      "kind": "requisition",
+      "status": "approved",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "superiorInstitutionCode": "99800000",
+      "superiorInstitutionName": "云浦运营中心",
+      "employeeId": null,
+      "employeeName": null,
+      "createdAt": "2026-08-09T09:15:00.000Z",
+      "createdBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "云浦寄达局"
+      },
+      "updatedAt": "2026-08-09T10:20:00.000Z",
+      "approvedAt": "2026-08-09T10:20:00.000Z",
+      "approvedBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "云浦寄达局"
+      },
+      "rejectedAt": null,
+      "rejectedBy": null,
+      "receivedAt": null,
+      "receivedBy": null,
+      "deletedAt": null,
+      "lines": [
+        {
+          "itemId": "supply-demo-dried-fruit-box",
+          "label": "演示果干礼盒",
+          "mnemonic": "GGLH",
+          "unit": "盒",
+          "unitPriceCents": 5200,
+          "requestedQuantity": 3,
+          "actualQuantity": 2,
+          "amountCents": 10400
+        }
+      ]
+    }
+  ],
+  "spotCheckExercises": [
+    {
+      "id": "CCYL-20260812-000001",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "employeeId": "80000001",
+      "employeeName": "演示营业员",
+      "inspectionType": "抽查演练",
+      "questionType": "营业-函件",
+      "questionNumber": "1002",
+      "receiptStatus": "unsigned",
+      "completionStatus": "incomplete",
+      "inspectedAt": "2026-08-12T10:00:00+10:00",
+      "signedAt": null,
+      "signedBy": null,
+      "completedAt": null,
+      "completedBy": null,
+      "answerValue": null
+    },
+    {
+      "id": "CCYL-20260811-000002",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "employeeId": "80000002",
+      "employeeName": "周清禾",
+      "inspectionType": "抽查演练",
+      "questionType": "汇兑-兑付",
+      "questionNumber": "2",
+      "receiptStatus": "signed",
+      "completionStatus": "completed",
+      "inspectedAt": "2026-08-11T15:00:00+10:00",
+      "signedAt": "2026-08-11T15:03:00+10:00",
+      "signedBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "虚构寄达局"
+      },
+      "completedAt": "2026-08-11T15:08:00+10:00",
+      "completedBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "虚构寄达局"
+      },
+      "answerValue": "business-record"
+    },
+    {
+      "id": "CCYL-20260810-000003",
+      "institutionCode": "99901001",
+      "institutionName": "景麓营业部",
+      "employeeId": "80000003",
+      "employeeName": "林远川",
+      "inspectionType": "抽查演练",
+      "questionType": "汇兑-汇款",
+      "questionNumber": "1",
+      "receiptStatus": "unsigned",
+      "completionStatus": "completed",
+      "inspectedAt": "2026-08-10T10:00:00+10:00",
+      "signedAt": null,
+      "signedBy": null,
+      "completedAt": "2026-08-10T10:05:00+10:00",
+      "completedBy": {
+        "operatorId": "80000001",
+        "displayName": "演示营业员",
+        "workstationCode": "01",
+        "acceptanceOffice": "景麓营业部",
+        "receivingOffice": "虚构寄达局"
+      },
+      "answerValue": "business-serial"
+    }
+  ],
+  "nextSequence": 1,
+  "nextPostalSupplySequence": 1,
+  "nextChannelProductSequence": 1,
+  "nextSupplementaryTrafficSequence": 1,
+  "nextElectronicCommerceSequence": 1,
+  "nextReplyCouponSequence": 1,
+  "nextSettlementSequence": 1,
+  "nextCorrectionSequence": 1,
+  "nextWithdrawalSequence": 1,
+  "nextRefundSequence": 1,
+  "nextDocumentActionSequence": 1,
+  "nextFiscalInvoiceSequence": 1,
+  "nextReturnReceiptSequence": 1,
+  "nextBulkBatchSequence": 1,
+  "nextSelfServiceImportSequence": 1,
+  "nextLooseMailHandoverSequence": 1,
+  "nextDispatchBagSequence": 1,
+  "nextDispatchManifestSequence": 501,
+  "nextDispatchBagHandoverSequence": 1,
+  "nextDispatchBagChangeSequence": 1,
+  "nextDispatchBagInterchangeReturnSequence": 1,
+  "nextDispatchRouteSequence": 1,
+  "nextDispatchPrintSequence": 1,
+  "nextPostageMeterBatchSequence": 1,
+  "nextPostageMeterRegistrationSequence": 1,
+  "nextPostageMeterDailyBalanceSequence": 1,
+  "nextPostageMeterMailHandoverSequence": 1,
+  "nextPostageMeterFundingSequence": 1,
+  "nextPostageMeterRepairSequence": 1,
+  "nextSpecialHandlingSequence": 1,
+  "nextWindowDeliverySequence": 7,
+  "nextWindowDeliveryAuditSequence": 1,
+  "nextPostalSupplyDocumentSequence": 4
+}
