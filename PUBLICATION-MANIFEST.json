@@ -1570,8 +1570,8 @@
     },
     {
       "path": "tools/publication-rules.mjs",
-      "bytes": 12364,
-      "sha256": "4f85ea919ef9bec1b33bc4a7d8767c4c3f162af19f663df99aebf37d6f89ecc9"
+      "bytes": 12310,
+      "sha256": "33bacb26909362072b5a9807bb6fd9d16ddcb3e690ec55ee13e922b7d6b6498b"
     },
     {
       "path": "tsconfig.app.json",

@@ -130,14 +130,13 @@ function walkWorkingTree(projectRoot, directory, entries, findings) {
     const relativePath = normalizePath(relative(projectRoot, absolutePath))
     if (isIgnoredPath(relativePath)) continue
 
-    const metadata = lstatSync(absolutePath)
-    if (metadata.isSymbolicLink()) {
+    if (child.isSymbolicLink()) {
       findings.push(`${relativePath}：公开仓库不接受符号链接`)
       continue
     }
-    if (metadata.isDirectory()) {
+    if (child.isDirectory()) {
       walkWorkingTree(projectRoot, absolutePath, entries, findings)
-    } else if (metadata.isFile()) {
+    } else if (child.isFile()) {
       const descriptor = openSync(absolutePath, 'r')
       try {
         const openedMetadata = fstatSync(descriptor)
