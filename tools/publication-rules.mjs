@@ -1,5 +1,12 @@
 import { createHash } from 'node:crypto'
-import { lstatSync, readFileSync, readdirSync } from 'node:fs'
+import {
+  closeSync,
+  fstatSync,
+  lstatSync,
+  openSync,
+  readFileSync,
+  readdirSync,
+} from 'node:fs'
 import { relative, resolve, sep } from 'node:path'
 
 const ignoredDirectoryNames = new Set([
@@ -123,15 +130,29 @@ function walkWorkingTree(projectRoot, directory, entries, findings) {
     const relativePath = normalizePath(relative(projectRoot, absolutePath))
     if (isIgnoredPath(relativePath)) continue
 
-    const metadata = lstatSync(absolutePath)
-    if (metadata.isSymbolicLink()) {
+    if (child.isSymbolicLink()) {
       findings.push(`${relativePath}：公开仓库不接受符号链接`)
       continue
     }
-    if (metadata.isDirectory()) {
+    if (child.isDirectory()) {
       walkWorkingTree(projectRoot, absolutePath, entries, findings)
-    } else if (metadata.isFile()) {
-      entries.set(relativePath, readFileSync(absolutePath))
+    } else if (child.isFile()) {
+      const descriptor = openSync(absolutePath, 'r')
+      try {
+        const openedMetadata = fstatSync(descriptor)
+        const currentPathMetadata = lstatSync(absolutePath)
+        const pathChanged =
+          currentPathMetadata.isSymbolicLink() ||
+          openedMetadata.dev !== currentPathMetadata.dev ||
+          openedMetadata.ino !== currentPathMetadata.ino
+        if (!openedMetadata.isFile() || pathChanged) {
+          findings.push(`${relativePath}：扫描期间文件类型或身份发生变化`)
+          continue
+        }
+        entries.set(relativePath, readFileSync(descriptor))
+      } finally {
+        closeSync(descriptor)
+      }
     } else {
       findings.push(`${relativePath}：公开仓库不接受特殊文件`)
     }
