@@ -4,7 +4,10 @@ import type {
   OnSiteAuthorization,
   RequestOnSiteAuthorization,
 } from '../../domain/access/workAuthorization'
-import { businessCalendarDay } from '../../domain/shared/businessTime'
+import {
+  businessCalendarDay,
+  formatBusinessDateTime,
+} from '../../domain/shared/businessTime'
 import {
   postageMeterBatchDifference,
   queryPostageMeterBatches,
@@ -637,7 +640,7 @@ export function PostageMeterWorkspace({
 
       {dailyPreviewOpen && dailyBalance ? <Modal description={`${dailyBalance.statisticDate} ${operator.acceptanceOffice}`} eyebrow="日终平衡" title="邮资机平衡汇总信息"><div className="postage-meter__print-preview"><h3>邮资机平衡汇总信息</h3><p>邮资机：{workspace.postageMeterDevices.find((device) => device.id === dailyBalance.deviceId)?.name}</p><p>应过戳：{dailyBalance.expectedItemCount} 件 / {formatCents(dailyBalance.expectedPostageCents)} 元</p><p>已过戳：{dailyBalance.actualItemCount} 件 / {formatCents(dailyBalance.actualPostageCents)} 元</p><p>注销：{dailyBalance.cancelledItemCount} 件 / {formatCents(dailyBalance.cancelledPostageCents)} 元</p><p>差异：{dailyBalance.differenceItemCount} 件 / {formatCents(dailyBalance.differencePostageCents)} 元</p></div><div className="modal-actions"><button className="primary-button primary-button--compact" onClick={() => { window.print(); setNotice('已调用浏览器打印。') }} type="button">打印</button><button className="secondary-button" onClick={() => setDailyPreviewOpen(false)} type="button">关闭</button></div></Modal> : null}
 
-      {uploadRecordsOpen ? <Modal description="日终平衡上传记录" eyebrow="日终平衡" title="上传记录"><div className="mail-handover__table-wrap"><table className="mail-handover__table postage-meter__table"><thead><tr><th>统计日期</th><th>邮资机</th><th>生成时间</th><th>上传状态</th><th>上传员工</th></tr></thead><tbody>{workspace.postageMeterDailyBalances.map((balance) => <tr key={balance.id}><td>{balance.statisticDate}</td><td>{workspace.postageMeterDevices.find((device) => device.id === balance.deviceId)?.name}</td><td>{new Date(balance.generatedAt).toLocaleString('zh-CN')}</td><td>{balance.uploadedAt ? '已上传' : '未上传'}</td><td>{balance.uploadedBy?.displayName ?? '—'}</td></tr>)}{workspace.postageMeterDailyBalances.length === 0 ? <tr><td colSpan={5}>无数据</td></tr> : null}</tbody></table></div><div className="modal-actions"><button className="secondary-button" onClick={() => setUploadRecordsOpen(false)} type="button">关闭</button></div></Modal> : null}
+      {uploadRecordsOpen ? <Modal description="日终平衡上传记录" eyebrow="日终平衡" title="上传记录"><div className="mail-handover__table-wrap"><table className="mail-handover__table postage-meter__table"><thead><tr><th>统计日期</th><th>邮资机</th><th>生成时间</th><th>上传状态</th><th>上传员工</th></tr></thead><tbody>{workspace.postageMeterDailyBalances.map((balance) => <tr key={balance.id}><td>{balance.statisticDate}</td><td>{workspace.postageMeterDevices.find((device) => device.id === balance.deviceId)?.name}</td><td>{formatBusinessDateTime(balance.generatedAt)}</td><td>{balance.uploadedAt ? '已上传' : '未上传'}</td><td>{balance.uploadedBy?.displayName ?? '—'}</td></tr>)}{workspace.postageMeterDailyBalances.length === 0 ? <tr><td colSpan={5}>无数据</td></tr> : null}</tbody></table></div><div className="modal-actions"><button className="secondary-button" onClick={() => setUploadRecordsOpen(false)} type="button">关闭</button></div></Modal> : null}
     </>
   )
 }

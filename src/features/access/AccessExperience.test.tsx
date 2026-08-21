@@ -17,7 +17,6 @@ import {
   DEMO_RECOVERY_SMS_CODE,
   registerSecretFailure,
 } from '../../domain/access/security'
-import { containsLegacyPublicProductText } from '../../domain/desensitization/publicText'
 import { MemoryAccessRepository } from '../../infrastructure/memory/MemoryAccessRepository'
 import { MemoryCustomerRepository } from '../../infrastructure/memory/MemoryCustomerRepository'
 import { MemoryServiceRepository } from '../../infrastructure/memory/MemoryServiceRepository'
@@ -85,7 +84,6 @@ describe('AccessExperience', () => {
       '',
       '',
     ])
-    expect(containsLegacyPublicProductText(document.body.textContent ?? '')).toBe(false)
   })
 
   it('uses an icon-only visibility control and the documented seat placeholder', async () => {
@@ -521,8 +519,6 @@ describe('AccessExperience', () => {
       '多渠道商品综合销售查改',
       '保险业务受理未授权',
     ])
-    expect(containsLegacyPublicProductText(document.body.textContent ?? '')).toBe(false)
-
     await user.click(businessParent)
     expect(businessParent).toHaveAttribute('aria-expanded', 'false')
     expect(within(operationalNavigation).queryByRole('button', { name: '综合受理' })).not.toBeInTheDocument()

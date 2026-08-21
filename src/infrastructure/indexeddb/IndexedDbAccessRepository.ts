@@ -14,7 +14,6 @@ import {
   createSeedState,
 } from '../../domain/access/seed'
 import type { SimulatorState } from '../../domain/access/types'
-import { sanitizePublicProductData } from '../../domain/desensitization/publicText'
 import { migrateRetiredStateDatabase } from './legacyDatabaseMigration'
 
 const STATE_KEY = 'current'
@@ -43,7 +42,7 @@ function migrateState(current: SimulatorState): SimulatorState {
     })
     migrated = migrateAccessState(migrated)
   }
-  return sanitizePublicProductData(migrated)
+  return migrated
 }
 
 function migrateStoredState(current: unknown): SimulatorState {
@@ -106,14 +105,14 @@ export class IndexedDbAccessRepository implements AccessRepository {
     const database = await this.databasePromise
     await database.put(
       'state',
-      sanitizePublicProductData(migrateAccessState(structuredClone(state))),
+      migrateAccessState(structuredClone(state)),
       STATE_KEY,
     )
   }
 
   async restore(state: SimulatorState): Promise<SimulatorState> {
     const database = await this.databasePromise
-    const restored = sanitizePublicProductData(migrateAccessState(structuredClone(state)))
+    const restored = migrateAccessState(structuredClone(state))
     await database.put('state', restored, STATE_KEY)
     return structuredClone(restored)
   }

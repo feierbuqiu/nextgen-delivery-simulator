@@ -56,7 +56,6 @@
 | `@jridgewell/trace-mapping` | `0.3.31` | `MIT` | [npm](https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.31.tgz) |
 | `@napi-rs/wasm-runtime` | `1.2.2` | `MIT` | [npm](https://registry.npmjs.org/@napi-rs/wasm-runtime/-/wasm-runtime-1.2.2.tgz) |
 | `@oxc-project/types` | `0.142.0` | `MIT` | [npm](https://registry.npmjs.org/@oxc-project/types/-/types-0.142.0.tgz) |
-| `@playwright/test` | `1.62.1` | `Apache-2.0` | [npm](https://registry.npmjs.org/@playwright/test/-/test-1.62.1.tgz) |
 | `@rolldown/binding-android-arm64` | `1.2.1` | `MIT` | [npm](https://registry.npmjs.org/@rolldown/binding-android-arm64/-/binding-android-arm64-1.2.1.tgz) |
 | `@rolldown/binding-darwin-arm64` | `1.2.1` | `MIT` | [npm](https://registry.npmjs.org/@rolldown/binding-darwin-arm64/-/binding-darwin-arm64-1.2.1.tgz) |
 | `@rolldown/binding-darwin-x64` | `1.2.1` | `MIT` | [npm](https://registry.npmjs.org/@rolldown/binding-darwin-x64/-/binding-darwin-x64-1.2.1.tgz) |
@@ -162,7 +161,6 @@
 | `find-up` | `5.0.0` | `MIT` | [npm](https://registry.npmjs.org/find-up/-/find-up-5.0.0.tgz) |
 | `flat-cache` | `4.0.1` | `MIT` | [npm](https://registry.npmjs.org/flat-cache/-/flat-cache-4.0.1.tgz) |
 | `flatted` | `3.4.4` | `ISC` | [npm](https://registry.npmjs.org/flatted/-/flatted-3.4.4.tgz) |
-| `fsevents` | `2.3.2` | `MIT` | [npm](https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz) |
 | `fsevents` | `2.3.3` | `MIT` | [npm](https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz) |
 | `gensync` | `1.0.0-beta.2` | `MIT` | [npm](https://registry.npmjs.org/gensync/-/gensync-1.0.0-beta.2.tgz) |
 | `glob-parent` | `6.0.2` | `ISC` | [npm](https://registry.npmjs.org/glob-parent/-/glob-parent-6.0.2.tgz) |
@@ -232,8 +230,6 @@
 | `pathe` | `2.0.3` | `MIT` | [npm](https://registry.npmjs.org/pathe/-/pathe-2.0.3.tgz) |
 | `picocolors` | `1.1.1` | `ISC` | [npm](https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz) |
 | `picomatch` | `4.0.5` | `MIT` | [npm](https://registry.npmjs.org/picomatch/-/picomatch-4.0.5.tgz) |
-| `playwright` | `1.62.1` | `Apache-2.0` | [npm](https://registry.npmjs.org/playwright/-/playwright-1.62.1.tgz) |
-| `playwright-core` | `1.62.1` | `Apache-2.0` | [npm](https://registry.npmjs.org/playwright-core/-/playwright-core-1.62.1.tgz) |
 | `postcss` | `8.5.25` | `MIT` | [npm](https://registry.npmjs.org/postcss/-/postcss-8.5.25.tgz) |
 | `prelude-ls` | `1.2.1` | `MIT` | [npm](https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz) |
 | `pretty-format` | `27.5.1` | `MIT` | [npm](https://registry.npmjs.org/pretty-format/-/pretty-format-27.5.1.tgz) |

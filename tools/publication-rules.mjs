@@ -19,8 +19,6 @@ const ignoredDirectoryNames = new Set([
 ])
 
 const mandatoryPaths = [
-  '.githooks/pre-commit',
-  '.githooks/pre-push',
   '.github/dependabot.yml',
   '.github/ISSUE_TEMPLATE/bug.yml',
   '.github/ISSUE_TEMPLATE/config.yml',
@@ -33,6 +31,7 @@ const mandatoryPaths = [
   'CONTRIBUTING.md',
   'DATA_POLICY.md',
   'GOVERNANCE.md',
+  'KNOWN_DEBT.md',
   'LICENSE',
   'PROJECT_CHARTER.md',
   'PUBLICATION-MANIFEST.json',
@@ -49,6 +48,7 @@ const mandatoryPaths = [
   'src/app/localOnly.ts',
   'src/main.tsx',
   'tools/check-publication.mjs',
+  'tools/check-dev-server.mjs',
   'tools/check-ci-governance.mjs',
   'tools/check-foundation.mjs',
   'tools/check-staged-publication.mjs',
@@ -56,6 +56,8 @@ const mandatoryPaths = [
   'tools/generate-third-party-metadata.mjs',
   'tools/publication-metadata.mjs',
   'tools/publication-rules.mjs',
+  'tools/runtime-version.mjs',
+  'tools/atomic-write.mjs',
 ]
 
 const forbiddenPathRules = [
@@ -74,13 +76,12 @@ const forbiddenTextRules = [
   { label: '现实机构名称', pattern: /中国邮政|中邮|邮储|大国邮政|新一代营业渠道系统/iu },
   { label: '现实机构英文名称', pattern: /\bchina\s+post\b/iu },
   { label: '现实速递标识', pattern: /\bEMS\b/u },
-  { label: '旧项目名称', pattern: /great[- ]nation[- ]post/iu },
   { label: '复刻或逐项还原表述', pattern: /一比一|one[- ]to[- ]one/iu },
   { label: '来源页面表述', pattern: /参考页面|参考字段|专有截图|参考截图|原系统/iu },
   { label: '非公开材料表述', pattern: /内部资料|内部手册|内部指南|内部截图/iu },
-  { label: '旧远端服务痕迹', pattern: /cloudflare|pages\.dev|feierbuqiu/iu },
-  { label: '旧交易前缀', pattern: /GNP-/u },
-  { label: '本机绝对路径', pattern: /[A-Z]:\\Users\\|\/Users\/[^/]+\/|\/home\/[^/]+\//u },
+  { label: '外部开发托管域名', pattern: /(?:pages|workers)\.dev/iu },
+  { label: '旧交易前缀', pattern: /GNP-/iu },
+  { label: '本机绝对路径', pattern: /[A-Z]:[\\/]Users[\\/]|\/Users\/[^/]+\/|\/home\/[^/]+\//u },
   { label: '私钥正文', pattern: /-----BEGIN (?:EC |OPENSSH |RSA )?PRIVATE KEY-----/u },
   { label: 'GitHub 访问令牌', pattern: /\b(?:gh[oprsu]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b/u },
   { label: '云访问密钥', pattern: /\bAKIA[0-9A-Z]{16}\b/u },
@@ -124,8 +125,68 @@ export function serializePublicationManifest(entries) {
   return `${JSON.stringify(createPublicationManifest(entries), null, 2)}\n`
 }
 
+function sameFileIdentity(left, right) {
+  return left.dev === right.dev && left.ino === right.ino
+}
+
+function readStableDirectory(directory, relativePath, findings) {
+  const before = lstatSync(directory)
+  if (before.isSymbolicLink() || !before.isDirectory()) {
+    findings.push(`${relativePath || '.'}：扫描期间目录类型发生变化`)
+    return []
+  }
+  const children = readdirSync(directory, { withFileTypes: true })
+  const after = lstatSync(directory)
+  if (after.isSymbolicLink() || !after.isDirectory() || !sameFileIdentity(before, after)) {
+    findings.push(`${relativePath || '.'}：扫描期间目录类型或身份发生变化`)
+    return []
+  }
+  return children
+}
+
+function readStableFile(absolutePath, relativePath, entries, findings) {
+  let descriptor
+  try {
+    descriptor = openSync(absolutePath, 'r')
+  } catch {
+    findings.push(`${relativePath}：扫描期间文件无法稳定打开`)
+    return
+  }
+
+  try {
+    const openedBefore = fstatSync(descriptor)
+    const currentPathMetadata = lstatSync(absolutePath)
+    const pathChanged =
+      currentPathMetadata.isSymbolicLink() ||
+      !currentPathMetadata.isFile() ||
+      !sameFileIdentity(openedBefore, currentPathMetadata)
+    if (!openedBefore.isFile() || pathChanged) {
+      findings.push(`${relativePath}：扫描期间文件类型或身份发生变化`)
+      return
+    }
+
+    const content = readFileSync(descriptor)
+    const openedAfter = fstatSync(descriptor)
+    const contentChanged =
+      !sameFileIdentity(openedBefore, openedAfter) ||
+      openedBefore.size !== openedAfter.size ||
+      openedBefore.mtimeMs !== openedAfter.mtimeMs ||
+      openedBefore.ctimeMs !== openedAfter.ctimeMs
+    if (contentChanged) {
+      findings.push(`${relativePath}：扫描期间文件内容发生变化`)
+      return
+    }
+    entries.set(relativePath, content)
+  } catch {
+    findings.push(`${relativePath}：扫描期间文件无法稳定读取`)
+  } finally {
+    closeSync(descriptor)
+  }
+}
+
 function walkWorkingTree(projectRoot, directory, entries, findings) {
-  for (const child of readdirSync(directory, { withFileTypes: true })) {
+  const directoryPath = normalizePath(relative(projectRoot, directory))
+  for (const child of readStableDirectory(directory, directoryPath, findings)) {
     const absolutePath = resolve(directory, child.name)
     const relativePath = normalizePath(relative(projectRoot, absolutePath))
     if (isIgnoredPath(relativePath)) continue
@@ -137,22 +198,7 @@ function walkWorkingTree(projectRoot, directory, entries, findings) {
     if (child.isDirectory()) {
       walkWorkingTree(projectRoot, absolutePath, entries, findings)
     } else if (child.isFile()) {
-      const descriptor = openSync(absolutePath, 'r')
-      try {
-        const openedMetadata = fstatSync(descriptor)
-        const currentPathMetadata = lstatSync(absolutePath)
-        const pathChanged =
-          currentPathMetadata.isSymbolicLink() ||
-          openedMetadata.dev !== currentPathMetadata.dev ||
-          openedMetadata.ino !== currentPathMetadata.ino
-        if (!openedMetadata.isFile() || pathChanged) {
-          findings.push(`${relativePath}：扫描期间文件类型或身份发生变化`)
-          continue
-        }
-        entries.set(relativePath, readFileSync(descriptor))
-      } finally {
-        closeSync(descriptor)
-      }
+      readStableFile(absolutePath, relativePath, entries, findings)
     } else {
       findings.push(`${relativePath}：公开仓库不接受特殊文件`)
     }

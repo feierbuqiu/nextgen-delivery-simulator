@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
 import { createTestOnSiteAuthorization } from '../../test/workAuthorization'
+import { createSeedState } from '../access/seed'
+import {
+  createSimulatorArchive,
+  parseSimulatorArchive,
+} from '../archive/simulatorArchive'
 import { createEmptyRecipient, createEmptySender } from '../customer/seed'
+import { createCustomerSeedState } from '../customer/seed'
 import { executeDispatchRoutingCommand } from './dispatchRouting'
 import { projectDispatchFlow, recommendedPostRoute } from './dispatchFlow'
 import { executeMailSealingCommand } from './mailSealing'
@@ -106,6 +112,25 @@ describe('dispatch flow projection', () => {
     flow = projectDispatchFlow(exported.state, '2026-08-19T01:21:00.000Z')
     expect(flow.transportGroups).toHaveLength(0)
     expect(flow.exportedRoutes).toEqual([
+      expect.objectContaining({
+        dispatchOrderNumber: 'PCD-20260819-A01',
+        exportAuthorizedBy: '90000001',
+        exportedAt: '2026-08-19T01:20:00.000Z',
+      }),
+    ])
+
+    const archive = createSimulatorArchive(
+      await createSeedState(),
+      createCustomerSeedState(),
+      exported.state,
+      '2026-08-19T01:25:00.000Z',
+    )
+    const restored = parseSimulatorArchive(JSON.stringify(archive))
+    const restoredFlow = projectDispatchFlow(
+      restored.data.services,
+      '2026-08-19T01:26:00.000Z',
+    )
+    expect(restoredFlow.exportedRoutes).toEqual([
       expect.objectContaining({
         dispatchOrderNumber: 'PCD-20260819-A01',
         exportAuthorizedBy: '90000001',

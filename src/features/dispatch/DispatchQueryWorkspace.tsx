@@ -17,7 +17,10 @@ import {
   type DispatchBalanceRow,
 } from '../../domain/service/dispatchBalanceReturn'
 import { SIMULATED_POST_ROUTES } from '../../domain/service/dispatchRouting'
-import { businessCalendarDay } from '../../domain/shared/businessTime'
+import {
+  businessCalendarDay,
+  formatBusinessDateTime,
+} from '../../domain/shared/businessTime'
 import type { ServiceRepository } from '../../domain/service/repository'
 import type { ServiceWorkspaceState } from '../../domain/service/types'
 import { Modal } from '../../ui/Modal'
@@ -38,8 +41,7 @@ function localDateValue(date: Date): string {
 
 function formatDateTime(value: string | null): string {
   if (!value) return '—'
-  const parsed = new Date(value)
-  return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString('zh-CN')
+  return formatBusinessDateTime(value)
 }
 
 function formatCents(cents: number): string {

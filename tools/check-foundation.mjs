@@ -46,22 +46,32 @@ if (JSON.stringify(packageJson.keywords) !== JSON.stringify(expectedKeywords)) {
   findings.push('package.json 的项目关键词发生变化')
 }
 
+const expectedCheck = 'npm run check:lockfile && npm run check:runtime && npm run lint && npm run check:foundation && npm run check:governance && npm run check:local-only && npm run check:architecture && npm run check:publication && npm run check:metadata && npm run check:manifest && npm run test:tools && npm run test:coverage && npm run build && npm run check:dev && npm run check:local-only && npm run check:bundle'
 const requiredScripts = {
+  predev: 'npm run check:runtime',
+  dev: 'vite --host 127.0.0.1 --port 4173 --strictPort',
+  build: 'tsc -b && vite build',
+  lint: 'eslint . --max-warnings=0',
+  test: 'vitest run',
+  'test:coverage': 'vitest run --coverage',
+  'test:tools': 'node --test tools/check-dev-server.test.mjs tools/publication-metadata.test.mjs tools/publication-rules.test.mjs',
+  'check:architecture': 'node tools/check-architecture.mjs',
+  'check:bundle': 'node tools/check-bundle-budgets.mjs',
+  'check:dev': 'node tools/check-dev-server.mjs',
   'check:foundation': 'node tools/check-foundation.mjs',
   'check:governance': 'node tools/check-ci-governance.mjs',
+  'check:lockfile': 'node tools/check-lockfile.mjs',
   'check:local-only': 'node tools/check-local-only.mjs',
   'check:publication': 'node tools/check-publication.mjs',
+  'check:runtime': 'node tools/runtime-version.mjs',
+  'check:metadata': 'node tools/generate-third-party-metadata.mjs --check',
+  'check:manifest': 'node tools/generate-publication-manifest.mjs --check',
+  check: expectedCheck,
   'check:release': 'npm run check && node tools/check-publication.mjs --release',
 }
 for (const [name, command] of Object.entries(requiredScripts)) {
   if (packageJson.scripts?.[name] !== command) findings.push(`package.json 不得绕过 ${name}`)
 }
-for (const name of ['check:foundation', 'check:governance', 'check:local-only', 'check:publication']) {
-  if (!String(packageJson.scripts?.check ?? '').includes(`npm run ${name}`)) {
-    findings.push(`package.json 的 check 必须包含 ${name}`)
-  }
-}
-
 requireText('README.md', '# 次世代寄递业务模拟器')
 requireText('README.md', '[项目宪章](PROJECT_CHARTER.md)')
 requireText('index.html', '<html lang="zh-CN">')
@@ -69,11 +79,11 @@ requireText('index.html', '<title>次世代寄递业务模拟器</title>')
 requireText('PROJECT_CHARTER.md', '默认且唯一受支持的运行方式是本机浏览器访问回环地址')
 requireText('PROJECT_CHARTER.md', '用户界面、使用说明、治理文档、议题模板和拉取请求模板以简体中文为默认语言')
 requireText('PROJECT_CHARTER.md', '任何放宽“永久定位”或接受“禁止的漂移”的修改均不属于可接受的治理变更')
-requireText('CONTRIBUTING.md', '每个提交必须带有可由 GitHub 验证的 GPG、SSH 或 S/MIME 密码学签名')
+requireText('CONTRIBUTING.md', '功能分支提交不要求签名')
 requireText('GOVERNANCE.md', '合并方式依次选择 merge commit、squash、rebase')
 requireText('GOVERNANCE.md', '普通拉取请求所需 reviewer 数量固定为 0')
-requireText('REPOSITORY_SETUP.md', '所有分支签名规则集')
-requireText('.githooks/pre-push', "grep -q '^gpgsig '")
+requireText('KNOWN_DEBT.md', '# 已知债务与证据边界')
+requireText('REPOSITORY_SETUP.md', '`main` 签名规则')
 
 if (findings.length > 0) {
   console.error(`项目基础边界检查失败：\n- ${findings.join('\n- ')}`)

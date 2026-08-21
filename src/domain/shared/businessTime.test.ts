@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   businessCalendarDay,
+  formatBusinessDateTime,
   isValidBusinessCalendarDay,
 } from './businessTime'
 
@@ -21,5 +22,11 @@ describe('business time', () => {
   it('rejects malformed persisted values without inventing a calendar day', () => {
     expect(businessCalendarDay('invalid-timestamp')).toBe('')
     expect(businessCalendarDay(new Date('invalid-timestamp'))).toBe('')
+  })
+
+  it('formats absolute timestamps in east-eight time instead of the host time zone', () => {
+    expect(formatBusinessDateTime('2026-08-10T16:30:45.000Z'))
+      .toBe('2026/08/11 00:30:45')
+    expect(formatBusinessDateTime('invalid-persisted-time')).toBe('invalid-persisted-time')
   })
 })

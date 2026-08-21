@@ -64,10 +64,11 @@ for (const expected of [
   'permissions:\n  contents: read',
   'persist-credentials: false',
   'npm ci --ignore-scripts',
-  'npm run check',
+  'npm run check:release',
   'npm audit --audit-level=high',
   'npm.cmd run test',
   'npm.cmd run build',
+  'npm.cmd run check:dev',
   'fail-on-severity: high',
 ]) {
   if (!quality.includes(expected)) findings.push(`quality.yml 缺少 ${JSON.stringify(expected)}`)
@@ -82,6 +83,8 @@ for (const expected of [
   "labels.has('治理变更')",
   "path: 'package.json'",
   "packageJson.name !== 'nextgen-delivery-simulator'",
+  "'check:dev': 'node tools/check-dev-server.mjs'",
+  "'check': 'npm run check:lockfile && npm run check:runtime",
 ]) {
   if (!governance.includes(expected)) findings.push(`governance.yml 缺少 ${JSON.stringify(expected)}`)
 }
@@ -100,11 +103,31 @@ try {
 } catch {
   // 其他检查器负责报告具体 JSON 错误。
 }
-if (packageJson.scripts?.['check:governance'] !== 'node tools/check-ci-governance.mjs') {
-  findings.push('check:governance 必须执行 tools/check-ci-governance.mjs')
+const expectedCheck = 'npm run check:lockfile && npm run check:runtime && npm run lint && npm run check:foundation && npm run check:governance && npm run check:local-only && npm run check:architecture && npm run check:publication && npm run check:metadata && npm run check:manifest && npm run test:tools && npm run test:coverage && npm run build && npm run check:dev && npm run check:local-only && npm run check:bundle'
+const requiredScripts = {
+  predev: 'npm run check:runtime',
+  dev: 'vite --host 127.0.0.1 --port 4173 --strictPort',
+  build: 'tsc -b && vite build',
+  lint: 'eslint . --max-warnings=0',
+  test: 'vitest run',
+  'test:coverage': 'vitest run --coverage',
+  'test:tools': 'node --test tools/check-dev-server.test.mjs tools/publication-metadata.test.mjs tools/publication-rules.test.mjs',
+  'check:architecture': 'node tools/check-architecture.mjs',
+  'check:bundle': 'node tools/check-bundle-budgets.mjs',
+  'check:dev': 'node tools/check-dev-server.mjs',
+  'check:foundation': 'node tools/check-foundation.mjs',
+  'check:governance': 'node tools/check-ci-governance.mjs',
+  'check:lockfile': 'node tools/check-lockfile.mjs',
+  'check:local-only': 'node tools/check-local-only.mjs',
+  'check:publication': 'node tools/check-publication.mjs',
+  'check:runtime': 'node tools/runtime-version.mjs',
+  'check:metadata': 'node tools/generate-third-party-metadata.mjs --check',
+  'check:manifest': 'node tools/generate-publication-manifest.mjs --check',
+  check: expectedCheck,
+  'check:release': 'npm run check && node tools/check-publication.mjs --release',
 }
-if (!String(packageJson.scripts?.check ?? '').includes('npm run check:governance')) {
-  findings.push('完整 check 必须包含 check:governance')
+for (const [name, command] of Object.entries(requiredScripts)) {
+  if (packageJson.scripts?.[name] !== command) findings.push(`package.json 不得绕过 ${name}`)
 }
 
 if (findings.length > 0) {

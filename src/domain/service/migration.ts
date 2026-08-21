@@ -1,5 +1,4 @@
 import { effectiveBusinessCode, yuanToCents } from './policy'
-import { sanitizePublicProductData } from '../desensitization/publicText'
 import { reconcileKnownPostalAddressData } from '../customer/postalAdministrativeDirectory'
 import { businessCalendarDay } from '../shared/businessTime'
 import { createServiceSeedState, SERVICE_PRODUCTS } from './seed'
@@ -382,7 +381,7 @@ export function migrateServiceWorkspaceState(value: unknown): ServiceWorkspaceSt
   }
   const seed = createServiceSeedState()
   const fiscalInvoices = migrateFiscalInvoices(stored)
-  const sanitized = sanitizePublicProductData({
+  const migrated = {
     schemaVersion: CURRENT_SERVICE_SCHEMA_VERSION,
     draft: stored.draft ? migrateDraft(stored.draft) : null,
     transactions: (stored.transactions ?? []).map(migrateTransaction),
@@ -670,8 +669,8 @@ export function migrateServiceWorkspaceState(value: unknown): ServiceWorkspaceSt
       stored.nextPointsInventoryMovementSequence,
       seed.nextPointsInventoryMovementSequence,
     ),
-  } as ServiceWorkspaceState)
+  } as ServiceWorkspaceState
   return reconcileServiceWorkspaceSequences(
-    reconcileKnownPostalAddressData(sanitized),
+    reconcileKnownPostalAddressData(migrated),
   )
 }
