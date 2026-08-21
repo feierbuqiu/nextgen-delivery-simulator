@@ -1085,8 +1085,8 @@
     },
     {
       "path": "src/features/query/ChannelQueryWorkspace.test.tsx",
-      "bytes": 9235,
-      "sha256": "297c7c3cb4f9333e0f948f373f842f465dcc79b3ed3eacc537ce1c16652d312c"
+      "bytes": 9286,
+      "sha256": "192a2dde6a2437ee2308acc8ad4f545e2fe0902a0dc1a6b72b66869b55b5e9fb"
     },
     {
       "path": "src/features/query/ChannelQueryWorkspace.tsx",
