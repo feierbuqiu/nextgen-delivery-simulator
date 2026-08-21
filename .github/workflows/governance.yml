@@ -57,13 +57,19 @@ jobs:
                 '.node-version',
                 '.npmrc',
                 'ARCHITECTURE.md',
+                'CODE_OF_CONDUCT.md',
+                'CONTRIBUTING.md',
                 'DATA_POLICY.md',
+                'GOVERNANCE.md',
+                'KNOWN_DEBT.md',
                 'LICENSE',
                 'PROJECT_CHARTER.md',
                 'PUBLICATION_POLICY.md',
+                'README.md',
                 'REPOSITORY_SETUP.md',
                 'SECURITY.md',
                 'eslint.config.js',
+                'index.html',
                 'src/app/localOnly.ts',
                 'src/main.tsx',
                 'tsconfig.app.json',
@@ -71,7 +77,7 @@ jobs:
                 'tsconfig.node.json',
                 'vite.config.ts',
               ])
-              const protectedPrefixes = ['.github/', '.githooks/', 'tools/']
+              const protectedPrefixes = ['.github/', 'tools/']
               const protectedChanges = files
                 .filter((file) => protectedExactPaths.has(file.filename) || protectedPrefixes.some((prefix) => file.filename.startsWith(prefix)))
                 .map((file) => file.filename)
@@ -97,10 +103,25 @@ jobs:
               if (packageJson.scripts?.preview !== 'vite preview --host 127.0.0.1 --port 4173 --strictPort') findings.push('不得改变本机预览地址')
 
               const guardedScripts = {
+                'predev': 'npm run check:runtime',
+                'dev': 'vite --host 127.0.0.1 --port 4173 --strictPort',
+                'build': 'tsc -b && vite build',
+                'lint': 'eslint . --max-warnings=0',
+                'test': 'vitest run',
+                'test:coverage': 'vitest run --coverage',
+                'test:tools': 'node --test tools/check-dev-server.test.mjs tools/publication-metadata.test.mjs tools/publication-rules.test.mjs',
+                'check:architecture': 'node tools/check-architecture.mjs',
+                'check:bundle': 'node tools/check-bundle-budgets.mjs',
+                'check:dev': 'node tools/check-dev-server.mjs',
                 'check:foundation': 'node tools/check-foundation.mjs',
                 'check:governance': 'node tools/check-ci-governance.mjs',
+                'check:lockfile': 'node tools/check-lockfile.mjs',
                 'check:local-only': 'node tools/check-local-only.mjs',
                 'check:publication': 'node tools/check-publication.mjs',
+                'check:runtime': 'node tools/runtime-version.mjs',
+                'check:metadata': 'node tools/generate-third-party-metadata.mjs --check',
+                'check:manifest': 'node tools/generate-publication-manifest.mjs --check',
+                'check': 'npm run check:lockfile && npm run check:runtime && npm run lint && npm run check:foundation && npm run check:governance && npm run check:local-only && npm run check:architecture && npm run check:publication && npm run check:metadata && npm run check:manifest && npm run test:tools && npm run test:coverage && npm run build && npm run check:dev && npm run check:local-only && npm run check:bundle',
                 'check:release': 'npm run check && node tools/check-publication.mjs --release',
               }
               if (!governanceOverride) {

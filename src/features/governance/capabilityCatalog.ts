@@ -1,8 +1,6 @@
 export type CapabilityMaturity = 'accepted' | 'implemented' | 'partial' | 'planned'
 
 export type CapabilityVerification =
-  | 'production'
-  | 'e2e'
   | 'component'
   | 'domain'
   | 'none'
@@ -27,16 +25,14 @@ export const CAPABILITY_MATURITY_LABELS: Readonly<Record<CapabilityMaturity, str
 }
 
 export const CAPABILITY_VERIFICATION_LABELS: Readonly<Record<CapabilityVerification, string>> = {
-  production: '本机构建用户路径',
-  e2e: '生产构建端到端',
   component: '组件与领域自动化',
   domain: '领域自动化',
   none: '尚无可执行验证',
 }
 
 const DEFAULT_NEXT_ACTION: Readonly<Record<Exclude<CapabilityMaturity, 'planned'>, string>> = {
-  accepted: '保持回归用例、本地验收证据和合规内容复核。',
-  implemented: '补充本机构建端到端与视觉基线后升级为已验收。',
+  accepted: '保持回归用例、独立用户路径复核和合规内容复核。',
+  implemented: '完成独立浏览器用户路径复核并记录结论后再升级为已验收。',
   partial: '关闭已知子流程和异常状态缺口后重新评定。',
 }
 
@@ -55,11 +51,13 @@ function defineCapability(
     label,
     path,
     maturity,
-    verification: maturity === 'accepted'
-      ? 'production'
-      : maturity === 'planned'
-        ? 'none'
-        : 'component',
+    verification: maturity === 'planned'
+      ? 'none'
+      : evidence.some((path) => path.endsWith('.test.tsx'))
+        ? 'component'
+        : evidence.some((path) => path.endsWith('.test.ts'))
+          ? 'domain'
+          : 'none',
     specification,
     evidence,
     summary,
@@ -76,13 +74,9 @@ const implemented = (...args: Parameters<typeof defineCapability> extends [unkno
 const planned = (...args: Parameters<typeof defineCapability> extends [unknown, ...infer Rest] ? Rest : never) =>
   defineCapability('planned', ...args)
 
-const SHELL_SPEC = 'PUBLICATION_POLICY.md'
-const ROADMAP = 'PUBLICATION_POLICY.md'
+const SHELL_SPEC = 'src/features/shell/navigation.ts'
+const ROADMAP = 'KNOWN_DEBT.md'
 const SHELL_TEST = 'src/features/shell/SimulatorShell.test.tsx'
-const GOLDEN_E2E = 'PUBLICATION_POLICY.md'
-const GOLDEN_ACCEPTANCE = 'PUBLICATION_POLICY.md'
-const BUSINESS_QUERY_ACCEPTANCE = 'PUBLICATION_POLICY.md'
-const CORE_TRANSPORT_ACCEPTANCE = 'PUBLICATION_POLICY.md'
 
 /**
  * 用户可见能力的唯一成熟度目录。
@@ -91,41 +85,41 @@ const CORE_TRANSPORT_ACCEPTANCE = 'PUBLICATION_POLICY.md'
  * 状态升级必须同时更新规格、证据路径和自动化验证，不能只修改展示标签。
  */
 export const CAPABILITY_CATALOG: readonly CapabilityDefinition[] = [
-  implemented('top.dashboard', '工作台', '全局导航 / 工作台', SHELL_SPEC, [SHELL_TEST, GOLDEN_E2E, GOLDEN_ACCEPTANCE], '登录后的主页、通知、待办、会话与工作页入口。'),
+  implemented('top.dashboard', '工作台', '全局导航 / 工作台', SHELL_SPEC, [SHELL_TEST], '登录后的主页、通知、待办、会话与工作页入口。'),
   planned('top.favorites', '收藏夹', '全局导航 / 收藏夹', SHELL_SPEC, [], '个性化快捷入口尚未建立持久化模型。'),
-  implemented('top.channel', '营业渠道', '全局导航 / 营业渠道', SHELL_SPEC, [SHELL_TEST, GOLDEN_E2E, GOLDEN_ACCEPTANCE], '进入营业渠道信息架构与核心受理工作区。'),
+  implemented('top.channel', '营业渠道', '全局导航 / 营业渠道', SHELL_SPEC, [SHELL_TEST], '进入营业渠道信息架构与核心受理工作区。'),
   planned('top.periodicals', '报刊业务', '全局导航 / 报刊业务', ROADMAP, [], '按当前公开范围暂缓，不列入近期邮政核心链路建设。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
   implemented('top.accounting', '账务处理', '全局导航 / 账务处理', 'PUBLICATION_POLICY.md', ['src/features/accounting/PersonalRemittanceWorkspace.test.tsx'], '个人缴款、机构日终、存行单与营业日报工作区。'),
   planned('top.philately', '集邮服务', '全局导航 / 集邮服务', ROADMAP, [], '按当前公开范围暂缓，不列入近期邮政核心链路建设。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
 
   planned('more.distribution', '分销业务', '更多栏目 / 分销业务', ROADMAP, [], '按当前公开范围暂缓，不列入近期邮政核心链路建设。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
   planned('more.points', '积分业务', '更多栏目 / 积分业务', ROADMAP, [], '商品库存管理已经实现并保留；积分账户、兑换、历史和统计按当前范围暂停扩展。', '保持既有库存回归，不继续新增积分能力。'),
-  implemented('more.settlement', '结算处理', '更多栏目 / 结算处理', 'PUBLICATION_POLICY.md', ['src/features/service/SettlementWorkspace.test.tsx', GOLDEN_E2E, GOLDEN_ACCEPTANCE], '统一处理待结算业务并形成结算、支付与凭据记录。'),
+  implemented('more.settlement', '结算处理', '更多栏目 / 结算处理', 'PUBLICATION_POLICY.md', ['src/features/service/SettlementWorkspace.test.tsx', 'src/domain/service/dispatchFlow.test.ts'], '统一处理待结算业务并形成结算、支付与凭据记录。'),
   planned('more.analytics', '综合数据', '更多栏目 / 综合数据', ROADMAP, [], '跨模块统计口径和数据字典尚未定稿。'),
   implemented('management.business', '业务管理', '更多栏目 / 业务管理', 'PUBLICATION_POLICY.md', ['src/features/management/ManagementWorkspaces.test.tsx'], '签到签退查询、人员审批和机构范围管理。'),
   implemented('management.basic', '基础管理', '更多栏目 / 基础管理', 'PUBLICATION_POLICY.md', ['src/features/management/ManagementWorkspaces.test.tsx'], '人员目录、岗位角色和权限维护。'),
 
-  implemented('channel.business.recommendation', '业务推荐', '营业渠道 / 业务办理 / 业务推荐', 'PUBLICATION_POLICY.md', ['src/domain/service/recommendation.test.ts', 'src/features/recommendation/RecommendationWorkspace.test.tsx', 'src/features/service/ServiceIntakePanel.test.tsx', GOLDEN_E2E, BUSINESS_QUERY_ACCEPTANCE], '按演练字段采集或暂不采集客户，依邮件类型、重量和寄达局生成有依据的候选产品，并连续带入综合受理；平台报价和时限不生成模拟结论。'),
-  implemented('channel.business.intake', '综合受理', '营业渠道 / 业务办理 / 综合受理', 'PUBLICATION_POLICY.md', ['src/features/customer/CustomerIntakeWorkspace.test.tsx', 'src/features/service/ServiceIntakePanel.test.tsx', GOLDEN_E2E, GOLDEN_ACCEPTANCE], '客户采集、产品选择、计费、提交和持久化受理主链。'),
-  implemented('channel.business.bulk', '大宗处理', '营业渠道 / 业务办理 / 大宗处理', 'PUBLICATION_POLICY.md', ['src/domain/service/bulk.test.ts', 'src/domain/service/migration.test.ts', 'src/features/bulk/BulkIntakeWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', GOLDEN_E2E, CORE_TRANSPORT_ACCEPTANCE], '协议客户、批量导入、逐件校验、结算、区间面单、爱心包裹直封、统一总包、原生路单与运输班人工交割主链。'),
+  implemented('channel.business.recommendation', '业务推荐', '营业渠道 / 业务办理 / 业务推荐', 'PUBLICATION_POLICY.md', ['src/domain/service/recommendation.test.ts', 'src/features/recommendation/RecommendationWorkspace.test.tsx', 'src/features/service/ServiceIntakePanel.test.tsx'], '按演练字段采集或暂不采集客户，依邮件类型、重量和寄达局生成有依据的候选产品，并连续带入综合受理；平台报价和时限不生成模拟结论。'),
+  implemented('channel.business.intake', '综合受理', '营业渠道 / 业务办理 / 综合受理', 'PUBLICATION_POLICY.md', ['src/features/customer/CustomerIntakeWorkspace.test.tsx', 'src/features/service/ServiceIntakePanel.test.tsx', 'src/domain/service/dispatchFlow.test.ts'], '客户采集、产品选择、计费、提交和持久化受理主链。'),
+  implemented('channel.business.bulk', '大宗处理', '营业渠道 / 业务办理 / 大宗处理', 'PUBLICATION_POLICY.md', ['src/domain/service/bulk.test.ts', 'src/domain/service/migration.test.ts', 'src/features/bulk/BulkIntakeWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts'], '协议客户、批量导入、逐件校验、结算、区间面单、爱心包裹直封、统一总包、原生路单与运输班人工交割主链。'),
   planned('channel.business.overlay-entry', '网点叠加业务补录', '营业渠道 / 业务办理 / 网点叠加业务补录', ROADMAP, [], '补录能力部分存在于综合受理，但尚无独立入口契约。'),
   planned('channel.business.commercial-bulk', '商函邮件大宗处理', '营业渠道 / 业务办理 / 商函邮件大宗处理', ROADMAP, [], '商函专用模板、审批和结算边界尚未独立建模。'),
   planned('channel.business.public-welfare-bulk', '公益邮件大宗处理', '营业渠道 / 业务办理 / 公益邮件大宗处理', ROADMAP, [], '公益邮件专用校验与单据尚未形成独立工作区。'),
-  implemented('channel.business.correction', '查改处理', '营业渠道 / 业务办理 / 查改处理', 'PUBLICATION_POLICY.md', ['src/domain/service/counterCorrections.test.ts', 'src/features/service/CounterCorrectionWorkspaces.test.tsx', 'src/features/service/TransactionQueryWorkspace.test.tsx', GOLDEN_E2E, GOLDEN_ACCEPTANCE], '收寄、用邮物品、电子商务、补录/交管和商品销售共用查改页签，执行查询、修改/调账、删除授权、打印/开票与审计。'),
+  implemented('channel.business.correction', '查改处理', '营业渠道 / 业务办理 / 查改处理', 'PUBLICATION_POLICY.md', ['src/domain/service/counterCorrections.test.ts', 'src/features/service/CounterCorrectionWorkspaces.test.tsx', 'src/features/service/TransactionQueryWorkspace.test.tsx'], '收寄、用邮物品、电子商务、补录/交管和商品销售共用查改页签，执行查询、修改/调账、删除授权、打印/开票与审计。'),
   implemented('channel.business.refund', '退款待办查询', '营业渠道 / 业务办理 / 退款待办查询', 'PUBLICATION_POLICY.md', ['src/features/service/RefundPendingWorkspace.test.tsx'], '查看并处理撤销后生成的本地退款待办。'),
   implemented('channel.business.return-receipt', '回执寄回办理', '营业渠道 / 业务办理 / 回执寄回办理', 'PUBLICATION_POLICY.md', ['src/features/service/ReturnReceiptWorkspace.test.tsx'], '回执办理、收到登记、寄回、撤销和状态查询。'),
   planned('channel.business.reply-coupon', '国际回信券兑付', '营业渠道 / 业务办理 / 国际回信券兑付', ROADMAP, [], '按当前公开范围停止继续建设；既有历史演练数据保留，但入口不再参与当前流程。', '保持历史数据兼容，不再扩展销售、兑付或结算能力。'),
-  implemented('channel.business.self-service-import', '客户自助批量导入', '营业渠道 / 业务办理 / 客户自助批量导入', 'PUBLICATION_POLICY.md', ['src/domain/service/selfServiceImport.test.ts', 'src/features/self-service-import/SelfServiceBatchImportWorkspace.test.tsx', 'src/infrastructure/indexeddb/IndexedDbServiceRepository.test.ts', GOLDEN_E2E, 'PUBLICATION_POLICY.md'], '17 位预约单查询、五件预受理明细、成功与处理详情、记欠直接结算、按批次/订单号查改重打及刷新恢复；结算邮件进入封发关系人工维护清单。'),
+  implemented('channel.business.self-service-import', '客户自助批量导入', '营业渠道 / 业务办理 / 客户自助批量导入', 'PUBLICATION_POLICY.md', ['src/domain/service/selfServiceImport.test.ts', 'src/features/self-service-import/SelfServiceBatchImportWorkspace.test.tsx', 'src/infrastructure/indexeddb/IndexedDbServiceRepository.test.ts'], '17 位预约单查询、五件预受理明细、成功与处理详情、记欠直接结算、按批次/订单号查改重打及刷新恢复；结算邮件进入封发关系人工维护清单。'),
   planned('channel.business.settlement-correction', '结算方式查改', '营业渠道 / 业务办理 / 结算方式查改', ROADMAP, [], '结算方式变更的授权、会计影响和审计规则尚未定稿。'),
-  implemented('channel.business.channel-sales-entry', '多渠道商品简易销售', '营业渠道 / 业务办理 / 多渠道商品简易销售', 'PUBLICATION_POLICY.md', ['src/features/customer/CustomerIntakeWorkspace.test.tsx', 'src/features/shell/navigation.test.ts', GOLDEN_E2E], '独立菜单直接进入综合受理的商品销售页签，并沿用同一客户草稿、购物车、库存与结算链。', '补充独立入口视觉基线与本机构建用户路径后升级为已验收。'),
+  implemented('channel.business.channel-sales-entry', '多渠道商品简易销售', '营业渠道 / 业务办理 / 多渠道商品简易销售', 'PUBLICATION_POLICY.md', ['src/features/customer/CustomerIntakeWorkspace.test.tsx', 'src/features/shell/navigation.test.ts'], '独立菜单直接进入综合受理的商品销售页签，并沿用同一客户草稿、购物车、库存与结算链。', '该外围能力按当前范围只维持既有回归，不追加用户路径验收。'),
   implemented('channel.business.channel-sales-query', '多渠道商品综合销售查改', '营业渠道 / 业务办理 / 多渠道商品综合销售查改', 'PUBLICATION_POLICY.md', ['src/features/service/ChannelProductQueryWorkspace.test.tsx'], '商品销售查询、详情、打印、删除授权和库存恢复。'),
   planned('channel.business.insurance', '保险业务受理', '营业渠道 / 业务办理 / 保险业务受理', ROADMAP, [], '按当前公开范围暂缓；未模拟任何现实保险主体、产品或接口。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
 
   implemented('channel.dispatch.handover', '交接处理', '营业渠道 / 邮件封发 / 交接处理', 'PUBLICATION_POLICY.md', ['src/features/dispatch/MailHandoverWorkspace.test.tsx'], '散件与总包交出、接收及状态约束。'),
-  implemented('channel.dispatch.sealing', '封发处理', '营业渠道 / 邮件封发 / 封发处理', 'PUBLICATION_POLICY.md', ['src/features/dispatch/MailSealingWorkspace.test.tsx', 'src/domain/service/mailSealing.test.ts', GOLDEN_E2E, 'PUBLICATION_POLICY.md'], '原生未封发处理按真实业务日查询，完成清单采集、班次选择、总包生成及袋牌人工决定；散件外走、分拣封发和已封发查改仍共用持久化总包状态链。'),
-  implemented('channel.dispatch.route', '路单生成', '营业渠道 / 邮件封发 / 路单生成', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchRouteWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', GOLDEN_E2E, 'PUBLICATION_POLICY.md'], '独立演练页面按当前业务日核对未归单总包，并连续生成演练路单和总路单。'),
-  implemented('channel.dispatch.print', '路单/清单打印', '营业渠道 / 邮件封发 / 路单/清单打印', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchPrintWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', GOLDEN_E2E, 'PUBLICATION_POLICY.md'], '独立演练页面按当前业务日查询清单、路单和总路单，保存模拟打印审计并形成浏览器打印预览。'),
-  implemented('channel.dispatch.export', '趟车出口', '营业渠道 / 邮件封发 / 趟车出口', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchTripExportWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', GOLDEN_E2E, 'PUBLICATION_POLICY.md'], '独立演练页面按当前交接日采集演练派车单，主管现场输入工号和密码授权后推进路单、总路单及总包出口状态。'),
+  implemented('channel.dispatch.sealing', '封发处理', '营业渠道 / 邮件封发 / 封发处理', 'PUBLICATION_POLICY.md', ['src/features/dispatch/MailSealingWorkspace.test.tsx', 'src/domain/service/mailSealing.test.ts', 'src/domain/service/dispatchFlow.test.ts'], '原生未封发处理按真实业务日查询，完成清单采集、班次选择、总包生成及袋牌人工决定；散件外走、分拣封发和已封发查改仍共用持久化总包状态链。'),
+  implemented('channel.dispatch.route', '路单生成', '营业渠道 / 邮件封发 / 路单生成', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchRouteWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', 'src/domain/service/dispatchFlow.test.ts'], '独立演练页面按当前业务日核对未归单总包，并连续生成演练路单和总路单。'),
+  implemented('channel.dispatch.print', '路单/清单打印', '营业渠道 / 邮件封发 / 路单/清单打印', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchPrintWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts'], '独立演练页面按当前业务日查询清单、路单和总路单，保存模拟打印审计并形成浏览器打印预览。'),
+  implemented('channel.dispatch.export', '趟车出口', '营业渠道 / 邮件封发 / 趟车出口', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchTripExportWorkspace.test.tsx', 'src/domain/service/dispatchRouting.test.ts', 'src/domain/service/dispatchFlow.test.ts'], '独立演练页面按当前交接日采集演练派车单，主管现场输入工号和密码授权后推进路单、总路单及总包出口状态。'),
   implemented('channel.dispatch.query', '封发查询', '营业渠道 / 邮件封发 / 封发查询', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchQueryWorkspace.test.tsx'], '封发、路单、出口与问题状态查询。'),
   implemented('channel.dispatch.interchange-return', '总包退回互换局', '营业渠道 / 邮件封发 / 总包退回互换局', 'PUBLICATION_POLICY.md', ['src/features/dispatch/DispatchBagInterchangeReturnWorkspace.test.tsx'], '符合条件的总包退回与邮件池恢复。'),
 
@@ -180,15 +174,15 @@ export const CAPABILITY_CATALOG: readonly CapabilityDefinition[] = [
   implemented('channel.query.spot-check', '抽查演练信息查询', '营业渠道 / 查询 / 抽查演练信息查询', 'PUBLICATION_POLICY.md', ['src/features/query/SpotCheckExerciseWorkspace.test.tsx'], '演练题目和抽查记录查询。'),
   implemented('channel.query.postal-administrative', '邮编行政区划查询', '营业渠道 / 查询 / 邮编行政区划查询', 'PUBLICATION_POLICY.md', ['src/features/query/PostalAdministrativeQueryWorkspace.test.tsx'], '虚构邮编与三级区划目录查询。'),
   planned('channel.query.inspection-mailbox', '巡视类专用邮政信箱查询', '营业渠道 / 查询 / 巡视类专用邮政信箱查询', ROADMAP, [], '按当前公开范围暂缓，不列入近期查询建设。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
-  implemented('channel.query.customer', '营业客户查询', '营业渠道 / 查询 / 营业客户查询', 'PUBLICATION_POLICY.md', ['src/domain/customer/businessCustomerQuery.test.ts', 'src/features/query/BusinessCustomerQueryWorkspace.test.tsx', GOLDEN_E2E, BUSINESS_QUERY_ACCEPTANCE], '按完整手机号或证件号查询本地客户事实，以通用字段布局展示脱敏只读资料；外围 CRM 字段不生成模拟结果。'),
+  implemented('channel.query.customer', '营业客户查询', '营业渠道 / 查询 / 营业客户查询', 'PUBLICATION_POLICY.md', ['src/domain/customer/businessCustomerQuery.test.ts', 'src/features/query/BusinessCustomerQueryWorkspace.test.tsx'], '按完整手机号或证件号查询本地客户事实，以通用字段布局展示脱敏只读资料；外围 CRM 字段不生成模拟结果。'),
   planned('channel.query.offline-loan', '线下贷款申请管理', '营业渠道 / 查询 / 线下贷款申请管理', ROADMAP, [], '按当前公开范围暂缓；本项目不接入现实金融主体。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
 
-  implemented('channel.points.inventory', '商品库存管理', '营业渠道 / 积分业务 / 商品库存管理', 'PUBLICATION_POLICY.md', ['src/domain/service/pointsInventory.test.ts', 'src/features/points/PointsInventoryWorkspace.test.tsx', GOLDEN_E2E], '积分商品精确/模糊查询、入库、退库、库存约束及模拟外部同步流水；既有实现保留。', '按当前范围暂停进一步扩展，仅维持既有回归。'),
+  implemented('channel.points.inventory', '商品库存管理', '营业渠道 / 积分业务 / 商品库存管理', 'PUBLICATION_POLICY.md', ['src/domain/service/pointsInventory.test.ts', 'src/features/points/PointsInventoryWorkspace.test.tsx'], '积分商品精确/模糊查询、入库、退库、库存约束及模拟外部同步流水；既有实现保留。', '按当前范围暂停进一步扩展，仅维持既有回归。'),
   planned('channel.points.redemption', '积分兑换', '营业渠道 / 积分业务 / 积分兑换', ROADMAP, [], '按当前公开范围暂缓，不列入近期实施。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
   planned('channel.points.history', '兑换历史查询', '营业渠道 / 积分业务 / 兑换历史查询', ROADMAP, [], '按当前公开范围暂缓，不列入近期实施。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
   planned('channel.points.statistics', '积分兑换统计', '营业渠道 / 积分业务 / 积分兑换统计', ROADMAP, [], '按当前公开范围暂缓，不列入近期实施。', '保留能力边界说明；除非范围重新调整，否则不进入近期实施。'),
 
-  implemented('help.capability-matrix', '功能成熟度', '营业渠道 / 帮助中心 / 功能成熟度', 'docs/CAPABILITY-MATRIX.md', ['src/features/governance/CapabilityMatrixWorkspace.test.tsx', GOLDEN_E2E, GOLDEN_ACCEPTANCE], '公开展示全部入口的成熟度、验证深度、规格和下一步。'),
+  implemented('help.capability-matrix', '功能成熟度', '营业渠道 / 帮助中心 / 功能成熟度', 'src/features/governance/capabilityCatalog.ts', ['src/features/governance/CapabilityMatrixWorkspace.test.tsx'], '公开展示全部入口的成熟度、验证深度、规格和下一步。'),
   planned('help.operation', '操作帮助', '营业渠道 / 帮助中心 / 操作帮助', ROADMAP, [], '面向角色和任务的产品内帮助尚未形成独立内容体系。'),
 ] as const
 

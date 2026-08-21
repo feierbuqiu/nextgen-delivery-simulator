@@ -1,9 +1,12 @@
+import { createHash } from 'node:crypto'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
 
+const applicationBase = '/'
+const localOnlyCsp = "default-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:* ws://localhost:*"
 const localOnlyHeaders = {
   'Cache-Control': 'no-store, max-age=0',
-  'Content-Security-Policy': "default-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' ws://127.0.0.1:* ws://localhost:*",
+  'Content-Security-Policy': localOnlyCsp,
   'Permissions-Policy': 'camera=(), geolocation=(), microphone=(), payment=(), usb=()',
   'Referrer-Policy': 'no-referrer',
   'X-Content-Type-Options': 'nosniff',
@@ -11,7 +14,20 @@ const localOnlyHeaders = {
   'X-Robots-Tag': 'noindex, nofollow, noarchive, nosnippet',
 }
 
+const reactRefreshPreamble = react.preambleCode.replace('__BASE__', applicationBase)
+const reactRefreshPreambleHash = `sha256-${createHash('sha256').update(reactRefreshPreamble).digest('base64')}`
+const localDevelopmentHeaders = {
+  ...localOnlyHeaders,
+  // Vite injects this one inline module in development. Keep preview strict and
+  // authorize only the exact installed plugin preamble instead of unsafe-inline.
+  'Content-Security-Policy': localOnlyCsp.replace(
+    "script-src 'self'",
+    `script-src 'self' '${reactRefreshPreambleHash}'`,
+  ),
+}
+
 export default defineConfig({
+  base: applicationBase,
   plugins: [react()],
   build: {
     target: 'es2022',
@@ -37,7 +53,7 @@ export default defineConfig({
   },
   server: {
     host: '127.0.0.1',
-    headers: localOnlyHeaders,
+    headers: localDevelopmentHeaders,
     port: 4173,
     strictPort: true,
   },

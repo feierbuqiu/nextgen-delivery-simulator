@@ -32,6 +32,16 @@ function existingCreatedTimestamp(existingSbomText) {
   }
 }
 
+function packageUrl(name, version) {
+  const encodedVersion = encodeURIComponent(version)
+  if (!name.startsWith('@')) return `pkg:npm/${encodeURIComponent(name)}@${encodedVersion}`
+  const separator = name.indexOf('/')
+  if (separator < 0) return `pkg:npm/${encodeURIComponent(name)}@${encodedVersion}`
+  const namespace = encodeURIComponent(name.slice(0, separator))
+  const packageName = encodeURIComponent(name.slice(separator + 1))
+  return `pkg:npm/${namespace}/${packageName}@${encodedVersion}`
+}
+
 export function generateThirdPartyArtifacts(lockText, packageText, existingSbomText = '') {
   const lockfile = JSON.parse(lockText)
   const packageJson = JSON.parse(packageText)
@@ -102,7 +112,7 @@ export function generateThirdPartyArtifacts(lockText, packageText, existingSbomT
         externalRefs: [{
           referenceCategory: 'PACKAGE-MANAGER',
           referenceType: 'purl',
-          referenceLocator: `pkg:npm/${encodeURIComponent(dependency.name)}@${encodeURIComponent(dependency.version)}`,
+          referenceLocator: packageUrl(dependency.name, dependency.version),
         }],
       })),
     ],

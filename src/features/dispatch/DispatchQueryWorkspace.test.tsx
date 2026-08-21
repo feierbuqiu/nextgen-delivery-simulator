@@ -166,7 +166,7 @@ describe('DispatchQueryWorkspace', () => {
 
     await user.click(screen.getByRole('button', { name: '总包出口时间查询' }))
     expect(screen.getByText('990101202608105010100000000001')).toBeInTheDocument()
-    expect(screen.getByText(/2026\/8\/10/)).toBeInTheDocument()
+    expect(screen.getByText('2026/08/10 10:00:00')).toBeInTheDocument()
 
     await user.click(screen.getByRole('button', { name: '未交接邮件查询' }))
     expect(screen.getAllByText(unhandedMailId)).toHaveLength(2)

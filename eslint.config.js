@@ -10,10 +10,6 @@ export default tseslint.config(
       'coverage',
       'dist',
       'node_modules',
-      '.public-release',
-      'private-reference',
-      'local-reference',
-      'tmp',
     ],
   },
   js.configs.recommended,
@@ -44,7 +40,6 @@ export default tseslint.config(
       'eslint.config.js',
       'vite.config.ts',
       'tools/**/*.mjs',
-      'publication/**/*.mjs',
     ],
     languageOptions: {
       globals: globals.node,

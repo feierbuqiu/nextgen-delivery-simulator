@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
@@ -6,6 +6,7 @@ import {
   reportFindings,
   serializePublicationManifest,
 } from './publication-rules.mjs'
+import { atomicWriteFileSync } from './atomic-write.mjs'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const manifestPath = resolve(projectRoot, 'PUBLICATION-MANIFEST.json')
@@ -29,6 +30,6 @@ if (checkOnly) {
     console.log(`公开文件清单检查通过：${entries.size - 1} 个文件。`)
   }
 } else {
-  writeFileSync(manifestPath, expected)
+  atomicWriteFileSync(manifestPath, expected)
   console.log(`公开文件清单已生成：${entries.size} 个文件。`)
 }

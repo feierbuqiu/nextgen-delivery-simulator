@@ -12,9 +12,17 @@ import {
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const release = process.argv.includes('--release')
 
-function stagedPaths() {
-  const output = execFileSync('git', ['ls-files', '-z'], { cwd: projectRoot })
-  return output.toString('utf8').split('\0').filter(Boolean).map(normalizePath).sort()
+function stagedFiles() {
+  const output = execFileSync('git', ['ls-files', '--stage', '-z'], { cwd: projectRoot })
+  return output.toString('utf8').split('\0').filter(Boolean).map((record) => {
+    const match = /^(\d{6}) [0-9a-f]+ (\d+)\t([\s\S]+)$/u.exec(record)
+    if (!match) throw new Error('无法解析 Git 索引文件模式。')
+    return {
+      mode: match[1],
+      stage: Number(match[2]),
+      path: normalizePath(match[3]),
+    }
+  }).sort((left, right) => left.path.localeCompare(right.path, 'en'))
 }
 
 function stagedContent(path) {
@@ -25,9 +33,16 @@ function stagedContent(path) {
   })
 }
 
-const paths = stagedPaths()
-const entries = new Map(paths.map((path) => [path, stagedContent(path)]))
-const findings = paths.length === 0 ? ['Git 索引为空，没有可提交的公开快照'] : []
+const files = stagedFiles()
+const findings = files.length === 0 ? ['Git 索引为空，没有可提交的公开快照'] : []
+for (const file of files) {
+  if (file.stage !== 0) findings.push(`${file.path}：Git 索引存在未解决的合并阶段`)
+  if (!['100644', '100755'].includes(file.mode)) {
+    findings.push(`${file.path}：Git 索引文件模式 ${file.mode} 不属于普通文件`)
+  }
+}
+const regularFiles = files.filter((file) => file.stage === 0 && ['100644', '100755'].includes(file.mode))
+const entries = new Map(regularFiles.map((file) => [file.path, stagedContent(file.path)]))
 findings.push(...inspectPublicEntries(entries, { release }))
 
 const stagedManifest = entries.get('PUBLICATION-MANIFEST.json')?.toString('utf8') ?? ''

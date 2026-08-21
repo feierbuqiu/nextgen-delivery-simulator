@@ -7,6 +7,17 @@ const businessDateFormatter = new Intl.DateTimeFormat('en-CA', {
   day: '2-digit',
 })
 
+const businessDateTimeFormatter = new Intl.DateTimeFormat('zh-CN', {
+  timeZone: EAST_EIGHT_TIME_ZONE,
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+})
+
 /**
  * 把绝对时间投影为模拟器统一使用的东八区业务日。
  *
@@ -22,6 +33,16 @@ export function businessCalendarDay(value: string | Date): string {
     .formatToParts(parsed)
     .map((part) => [part.type, part.value]))
   return `${parts.year}-${parts.month}-${parts.day}`
+}
+
+/**
+ * 用统一东八区显示绝对时间，避免界面跟随开发者电脑所在时区漂移。
+ * 无效的字符串保持原样，便于发现损坏的持久化数据。
+ */
+export function formatBusinessDateTime(value: string | Date): string {
+  const parsed = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(parsed.getTime())) return typeof value === 'string' ? value : ''
+  return businessDateTimeFormatter.format(parsed)
 }
 
 export function isValidBusinessCalendarDay(value: string): boolean {

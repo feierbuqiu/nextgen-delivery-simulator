@@ -1,7 +1,8 @@
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { generateThirdPartyArtifacts } from './publication-metadata.mjs'
+import { atomicWriteFileSync } from './atomic-write.mjs'
 
 const projectRoot = fileURLToPath(new URL('../', import.meta.url))
 const noticesPath = resolve(projectRoot, 'THIRD_PARTY_NOTICES.md')
@@ -39,7 +40,7 @@ if (checkOnly) {
     console.log(`第三方元数据检查通过：${artifacts.dependencyCount} 个锁定依赖。`)
   }
 } else {
-  writeFileSync(noticesPath, artifacts.notices)
-  writeFileSync(sbomPath, artifacts.sbom)
+  atomicWriteFileSync(noticesPath, artifacts.notices)
+  atomicWriteFileSync(sbomPath, artifacts.sbom)
   console.log(`第三方元数据已生成：${artifacts.dependencyCount} 个锁定依赖。`)
 }

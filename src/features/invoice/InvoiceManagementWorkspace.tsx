@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 
 import type { RequestOnSiteAuthorization } from '../../domain/access/workAuthorization'
 import { formatCents } from '../../domain/service/policy'
-import { businessCalendarDay } from '../../domain/shared/businessTime'
+import {
+  businessCalendarDay,
+  formatBusinessDateTime,
+} from '../../domain/shared/businessTime'
 import type { ServiceRepository } from '../../domain/service/repository'
 import type {
   FiscalInvoiceRecord,
@@ -188,7 +191,7 @@ export function InvoiceManagementWorkspace({
               <thead><tr><th><input aria-label="选择全部发票" disabled type="checkbox" /></th><th>序号</th><th>发票代码</th><th>发票号码</th><th>开票日期</th><th>操作</th></tr></thead>
               <tbody>
                 {results.map((invoice, index) => (
-                  <tr key={invoice.id}><td><input aria-label={`选择发票 ${invoice.invoiceNumber}`} type="checkbox" /></td><td>{index + 1}</td><td>{invoice.invoiceCode}</td><td>{invoice.invoiceNumber}</td><td>{new Date(invoice.issuedAt).toLocaleString('zh-CN', { hour12: false })}</td><td><div className="invoice-management__actions">{invoice.status === 'issued' ? <button className="invoice-management__red-button" onClick={() => openRedFlush(invoice)} type="button">冲红</button> : null}<button onClick={() => setDetail(invoice)} type="button">详情</button></div></td></tr>
+                  <tr key={invoice.id}><td><input aria-label={`选择发票 ${invoice.invoiceNumber}`} type="checkbox" /></td><td>{index + 1}</td><td>{invoice.invoiceCode}</td><td>{invoice.invoiceNumber}</td><td>{formatBusinessDateTime(invoice.issuedAt)}</td><td><div className="invoice-management__actions">{invoice.status === 'issued' ? <button className="invoice-management__red-button" onClick={() => openRedFlush(invoice)} type="button">冲红</button> : null}<button onClick={() => setDetail(invoice)} type="button">详情</button></div></td></tr>
                 ))}
                 {hasQueried && results.length === 0 ? <tr><td className="settlement-empty" colSpan={6}>无数据</td></tr> : null}
                 {!hasQueried ? <tr><td className="settlement-empty" colSpan={6}>设置条件后点击“查询”。</td></tr> : null}

@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
@@ -176,12 +176,14 @@ describe('ChannelQueryWorkspace', () => {
     const password = within(authorization).getByLabelText('收寄隐私主管密码')
     await user.type(password, 'wrong')
     await user.click(within(authorization).getByRole('button', { name: '确认授权' }))
-    expect(within(authorization).getByRole('alert')).toHaveTextContent('授权人员密码校验失败')
+    expect(await within(authorization).findByRole('alert')).toHaveTextContent('授权人员密码校验失败')
     await user.clear(password)
     await user.type(password, DEMO_SUPERVISOR_SECRET)
     await user.click(within(authorization).getByRole('button', { name: '确认授权' }))
 
-    expect(screen.queryByRole('dialog', { name: '授权' })).not.toBeInTheDocument()
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: '授权' })).not.toBeInTheDocument()
+    })
     expect(within(detail).getByText('10000000001')).toBeInTheDocument()
     expect(within(detail).getByText('990101199001010035')).toBeInTheDocument()
     expect(within(detail).getByText('瀚原省栖沄市景麓区示范路 1 号')).toBeInTheDocument()

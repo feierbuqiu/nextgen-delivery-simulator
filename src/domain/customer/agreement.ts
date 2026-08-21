@@ -11,7 +11,6 @@ import type {
   Gender,
   IdentityType,
 } from './types'
-import { sanitizePublicProductData } from '../desensitization/publicText'
 import { reconcileKnownPostalAddressData } from './postalAdministrativeDirectory'
 import { businessCalendarDay } from '../shared/businessTime'
 
@@ -60,12 +59,12 @@ export function normalizeCustomerWorkspaceState(
     agreementApplications?: AgreementAccountApplication[]
   }),
 ): CustomerWorkspaceState {
-  const sanitized = sanitizePublicProductData({
+  const migrated = {
     ...structuredClone(state),
     schemaVersion: 2,
     agreementApplications: structuredClone(state.agreementApplications ?? []),
-  } as CustomerWorkspaceState)
-  return reconcileKnownPostalAddressData(sanitized)
+  } as CustomerWorkspaceState
+  return reconcileKnownPostalAddressData(migrated)
 }
 
 export function validateAgreementApplication(

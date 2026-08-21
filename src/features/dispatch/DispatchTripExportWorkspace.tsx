@@ -10,6 +10,7 @@ import {
 } from '../../domain/service/dispatchRouting'
 import {
   businessCalendarDay,
+  formatBusinessDateTime,
   shiftBusinessCalendarDay,
 } from '../../domain/shared/businessTime'
 import type { ServiceRepository } from '../../domain/service/repository'
@@ -338,7 +339,7 @@ export function DispatchTripExportWorkspace({
 
       {detailRoute ? (
         <Modal description={`路单 ${detailRoute.routeNumber}`} eyebrow="趟车出口" title="路单详情" wide>
-          <div className="dispatch-route__detail-grid"><span>邮路</span><strong>{detailRoute.routeCode} - {detailRoute.routeName}</strong><span>清单号</span><strong>{detailRoute.manifestNumbers.join('、') || '—'}</strong><span>封发日期 / 班次</span><strong>{detailRoute.sealingDate} / {detailRoute.shift}</strong><span>勾挑接收</span><strong>{detailRoute.catchupReceivedAt ? `${detailRoute.catchupReceiptDate} ${detailRoute.catchupReceivedBy?.displayName ?? ''}` : '—'}</strong><span>派车单号</span><strong>{detailRoute.dispatchOrderNumber || '—'}</strong><span>授权工号 / 时间</span><strong>{detailRoute.exportAuthorizedBy ? `${detailRoute.exportAuthorizedBy} / ${detailRoute.exportAuthorizedAt ? new Date(detailRoute.exportAuthorizedAt).toLocaleString('zh-CN') : '—'}` : '—'}</strong><span>确认出口时间</span><strong>{detailRoute.exportedAt ? new Date(detailRoute.exportedAt).toLocaleString('zh-CN') : '—'}</strong></div>
+          <div className="dispatch-route__detail-grid"><span>邮路</span><strong>{detailRoute.routeCode} - {detailRoute.routeName}</strong><span>清单号</span><strong>{detailRoute.manifestNumbers.join('、') || '—'}</strong><span>封发日期 / 班次</span><strong>{detailRoute.sealingDate} / {detailRoute.shift}</strong><span>勾挑接收</span><strong>{detailRoute.catchupReceivedAt ? `${detailRoute.catchupReceiptDate} ${detailRoute.catchupReceivedBy?.displayName ?? ''}` : '—'}</strong><span>派车单号</span><strong>{detailRoute.dispatchOrderNumber || '—'}</strong><span>授权工号 / 时间</span><strong>{detailRoute.exportAuthorizedBy ? `${detailRoute.exportAuthorizedBy} / ${detailRoute.exportAuthorizedAt ? formatBusinessDateTime(detailRoute.exportAuthorizedAt) : '—'}` : '—'}</strong><span>确认出口时间</span><strong>{detailRoute.exportedAt ? formatBusinessDateTime(detailRoute.exportedAt) : '—'}</strong></div>
           <div className="modal-actions"><button className="primary-button primary-button--compact" onClick={() => setDetailRoute(null)} type="button">关闭</button></div>
         </Modal>
       ) : null}

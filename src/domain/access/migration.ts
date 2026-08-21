@@ -1,4 +1,3 @@
-import { sanitizePublicProductData } from '../desensitization/publicText'
 import {
   ACCESS_INSTITUTIONS,
   ACCESS_ROLES,
@@ -537,5 +536,5 @@ export function migrateAccessState(current: SimulatorState | unknown): Simulator
     securityByOperatorId,
     session,
   }
-  return sanitizePublicProductData(migrated)
+  return migrated
 }
