@@ -58,7 +58,7 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.67.0",
     "vite": "8.2.1",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   },
   "description": "使用虚构数据、仅限本机运行的中文次世代寄递业务模拟器。",
   "keywords": [
